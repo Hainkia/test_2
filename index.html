@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f4ef" />
+    <meta name="description" content="기술 교과 수업과 학생의 활동 근거를 바탕으로 세부능력 및 특기사항 초안을 작성합니다." />
+    <title>기술 세특 스튜디오 — 학생부 문장 초안</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/overrides.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="기술 세특 스튜디오 홈">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span>기술 세특 스튜디오</span>
+        </a>
+        <div class="topbar-note"><span class="live-dot"></span> EVIDENCE-BASED WRITING <span class="topbar-divider">/</span> BETA</div>
+      </header>
+
+      <main>
+        <section class="intro">
+          <p class="eyebrow"><span>01</span> OBSERVE · CONNECT · WRITE</p>
+          <h1>학생의 배움이 보이는<br /><em>기술 세특</em>을 설계해요.</h1>
+          <p class="intro-copy">점수보다 활동의 근거와 성장 과정을 담아<br class="desktop-break" /> 교사가 검토할 세특 초안을 만들어 드려요.</p>
+          <div class="stage-preview"><span>수업 맥락</span><i></i><span>활동 근거</span><i></i><span>개인 기여</span><i></i><span>성장 기록</span></div>
+        </section>
+
+        <div class="workspace">
+          <section class="form-panel panel" aria-labelledby="form-title">
+            <div class="panel-heading">
+              <div><p class="eyebrow muted">STUDENT EVIDENCE</p><h2 id="form-title">수업 및 학생 정보</h2></div>
+              <span class="step-badge">INPUT</span>
+            </div>
+            <form id="lesson-form">
+              <label class="field">
+                <span class="field-label">Gemini API 키 <span class="required">필수</span></span>
+                <input id="api-key" name="apiKey" type="password" autocomplete="off" placeholder="AIza…" required />
+                <small class="field-hint">키는 저장되지 않으며 생성 요청에만 사용됩니다.</small>
+              </label>
+              <div class="field">
+                <span class="field-label">사용 모델</span>
+                <div class="model-pill"><span class="sparkle" aria-hidden="true">✳</span><span>Gemini 3.5 Flash-Lite</span><code>gemini-3.5-flash-lite</code><span class="model-status">READY</span></div>
+              </div>
+
+              <div class="form-section">
+                <div class="section-heading"><span class="section-number">A</span><div><h3>수업 맥락</h3><p>성취기준과 수업에서 다룬 내용을 입력해 주세요.</p></div></div>
+                <div class="field-row">
+                  <label class="field"><span class="field-label">학년·학기 <span class="required">필수</span></span><input id="gradeTerm" type="text" maxlength="40" placeholder="예: 중학교 2학년 1학기" required /></label>
+                  <label class="field"><span class="field-label">학생 임시 번호</span><input id="studentId" type="text" maxlength="30" placeholder="예: 학생 07" /></label>
+                </div>
+                <label class="field"><span class="field-label">과목·단원 <span class="required">필수</span></span><input id="courseUnit" type="text" maxlength="100" placeholder="예: 기술·가정 / 기술의 활용" required /></label>
+                <label class="field"><span class="field-label">성취기준 <span class="required">필수</span></span><textarea id="achievementStandard" rows="3" maxlength="1200" placeholder="수업과 직접 관련된 성취기준을 입력해 주세요." required></textarea></label>
+                <div class="field-row">
+                  <label class="field"><span class="field-label">학생의 진로희망</span><input id="career" type="text" maxlength="100" placeholder="선택 입력" /></label>
+                  <label class="field"><span class="field-label">진로와 활동의 관련성</span><input id="careerConnection" type="text" maxlength="300" placeholder="구체적 근거가 있을 때만 입력" /></label>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <div class="section-heading"><span class="section-number">B</span><div><h3>평가와 수행 근거</h3><p>점수와 함께 결과를 보여주는 구체적 근거를 입력해 주세요.</p></div></div>
+                <label class="field"><span class="field-label">수행평가 항목</span><input id="assessmentItem" type="text" maxlength="160" placeholder="예: 생활 문제 해결을 위한 제품 설계·제작" /></label>
+                <label class="field"><span class="field-label">평가 기준 또는 루브릭</span><textarea id="rubric" rows="3" maxlength="1000" placeholder="예: 문제 분석, 아이디어의 실현 가능성, 제작 과정, 개선 근거"></textarea></label>
+                <label class="field"><span class="field-label">결과·수준·점수 <span class="required">선택</span></span><input id="assessmentResult" type="text" maxlength="160" placeholder="예: 루브릭의 문제 해결 항목에서 상 수준" /></label>
+                <label class="field"><span class="field-label">결과를 뒷받침하는 수행 근거</span><textarea id="evidence" rows="4" maxlength="1400" placeholder="학생이 실제로 조사·설계·제작·시험한 내용이나 산출물에서 확인된 점을 적어 주세요."></textarea></label>
+              </div>
+
+              <div class="form-section">
+                <div class="section-heading"><span class="section-number">C</span><div><h3>프로젝트와 개인 기여</h3><p>팀의 결과와 학생 개인의 역할을 구분해 주세요.</p></div></div>
+                <label class="field"><span class="field-label">팀프로젝트 주제와 팀 결과물</span><textarea id="project" rows="3" maxlength="900" placeholder="프로젝트 주제와 팀이 만든 결과물을 적어 주세요."></textarea></label>
+                <label class="field"><span class="field-label">학생의 역할과 직접 수행한 내용</span><textarea id="contribution" rows="3" maxlength="1200" placeholder="학생이 맡은 역할, 직접 한 작업, 의사결정에 기여한 내용을 적어 주세요."></textarea></label>
+                <label class="field"><span class="field-label">문제 해결·오류 수정·재설계 과정</span><textarea id="problemSolving" rows="3" maxlength="1200" placeholder="어떤 문제를 어떻게 파악하고 수정·개선했는지 적어 주세요."></textarea></label>
+              </div>
+
+              <div class="form-section">
+                <div class="section-heading"><span class="section-number">D</span><div><h3>관찰과 성찰</h3><p>수업 중 확인한 행동이나 변화가 있으면 적어 주세요.</p></div></div>
+                <label class="field"><span class="field-label">관찰된 기술 교과 역량</span><textarea id="competencies" rows="3" maxlength="900" placeholder="설계, 제작, 도구 활용, 안전, 디지털 활용 등 관찰된 역량과 근거를 적어 주세요."></textarea></label>
+                <label class="field"><span class="field-label">수업 참여와 학습 태도에 대한 교사 관찰</span><textarea id="observation" rows="3" maxlength="1000" placeholder="태도 평가보다 관찰 가능한 행동, 발언, 참여 장면을 적어 주세요."></textarea></label>
+                <label class="field"><span class="field-label">학생 성찰 또는 피드백 반영</span><textarea id="reflection" rows="3" maxlength="900" placeholder="학생의 성찰, 동료·교사 피드백을 반영한 변화가 있다면 입력해 주세요."></textarea></label>
+              </div>
+
+              <div class="form-section conditions-section">
+                <div class="section-heading"><span class="section-number">E</span><div><h3>작성 조건</h3><p>학교와 교과 상황에 맞게 조정해 주세요.</p></div></div>
+                <div class="field-row">
+                  <label class="field"><span class="field-label">글자 수 제한</span><input id="charLimit" type="number" min="100" max="3000" value="500" /></label>
+                  <label class="field"><span class="field-label">글자 수 기준</span><select id="charBasis"><option value="공백 포함">공백 포함</option><option value="공백 제외">공백 제외</option></select></label>
+                </div>
+                <label class="field"><span class="field-label">반드시 반영할 내용</span><textarea id="requiredContent" rows="2" maxlength="500" placeholder="없으면 비워 두세요."></textarea></label>
+                <label class="field"><span class="field-label">피해야 할 표현이나 내용</span><textarea id="excludedContent" rows="2" maxlength="500" placeholder="없으면 비워 두세요."></textarea></label>
+              </div>
+
+              <div id="form-error" class="form-error" role="alert" hidden></div>
+              <button id="generate-button" class="primary-button" type="submit"><span class="button-label">세특 초안 만들기</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+              <p class="privacy-note"><span aria-hidden="true">⌑</span> 수업·활동 자료는 Gemini API로 전송되며, 임시 번호는 파일명에만 사용됩니다. 학생 이름·연락처는 입력하지 마세요.</p>
+            </form>
+          </section>
+
+          <section class="result-panel panel" aria-labelledby="result-title">
+            <div class="panel-heading result-heading">
+              <div><p class="eyebrow muted">DRAFT FOR TEACHER REVIEW</p><h2 id="result-title">세특 초안</h2></div>
+              <div class="result-actions"><button id="copy-button" class="download-button" type="button" disabled><span aria-hidden="true">▢</span> 복사</button><button id="download-button" class="download-button" type="button" disabled><span aria-hidden="true">↓</span> TXT 저장</button></div>
+            </div>
+            <div id="result-content" class="result-content" aria-live="polite" aria-busy="false">
+              <div id="empty-state" class="empty-state">
+                <div class="empty-art" aria-hidden="true"><span class="paper paper-back"></span><span class="paper paper-front"><i></i><i></i><i></i><b>✳</b></span></div>
+                <p class="empty-title">관찰한 배움의 순간을 기록해 보세요</p>
+                <p class="empty-copy">수업 맥락과 학생의 수행 근거를 입력하면<br />교사가 다듬어 쓸 세특 초안이 여기에 표시됩니다.</p>
+                <div class="empty-tags"><span>근거 중심</span><span>개별 기여</span><span>성장 과정</span></div>
+              </div>
+              <div id="loading-state" class="loading-state" hidden><div class="loader-orbit"><span></span><span></span><span></span></div><p class="loading-title">관찰 근거를 문장으로 정리하고 있어요</p><p class="loading-copy">입력하지 않은 사실은 추측하지 않고 작성합니다.</p><div class="loading-line"><span></span></div></div>
+              <article id="report" class="report" hidden></article>
+            </div>
+            <div class="result-footer"><span class="footer-dot"></span><span id="result-status">생성 결과가 여기에 표시됩니다</span><span class="footer-model">POWERED BY GEMINI</span></div>
+          </section>
+        </div>
+      </main>
+      <footer class="page-footer"><span>기술 세특 스튜디오 <span class="footer-year">© 2026</span></span><span>교사의 관찰과 판단을 돕는 초안 작성 도구</span></footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+.form-section{display:flex;flex-direction:column;gap:15px;margin-top:8px;padding-top:20px;border-top:1px solid #edf0eb}
+.section-heading{display:flex;align-items:flex-start;gap:11px;margin-bottom:2px}
+.section-number{display:grid;place-items:center;flex:0 0 24px;height:24px;border-radius:7px;background:#eef4e9;color:#607e4f;font:10px var(--mono)}
+.section-heading h3{margin:1px 0 4px;font-size:13px;letter-spacing:-.04em}
+.section-heading p{margin:0;color:#98a19a;font-size:9px;line-height:1.5}
+.form-section .field-row{margin-top:1px}
+.field select{height:39px;width:100%;padding:0 10px;border:1px solid #e4e8e1;border-radius:7px;background:#fcfcfa;color:var(--ink);font:11px "DM Sans","Noto Sans KR",sans-serif;outline:none}
+.field select:focus{border-color:#9fbb84;box-shadow:0 0 0 3px rgba(180,208,150,.18)}
+.result-actions{display:flex;gap:7px}
+.result-panel{position:sticky;top:20px;align-self:start;height:min(820px,calc(100vh - 40px));min-height:540px}
+.report p{margin:0;color:#344239;font-size:12px;line-height:2.05;white-space:pre-wrap;overflow-wrap:anywhere}
+.result-content{min-height:0}
+.form-panel{padding-bottom:24px}
+@media(max-width:900px){.result-panel{height:min(820px,calc(100vh - 40px));min-height:500px}}
+@media(max-width:680px){.result-panel{position:static;height:560px;min-height:500px}.form-section{gap:13px;padding-top:17px}.section-heading{gap:9px}.result-actions{gap:5px}.download-button{padding:7px 8px;font-size:9px}}
