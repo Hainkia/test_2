@@ -1,0 +1,55 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const assert = require('node:assert/strict');
+const root = process.argv[2] || path.resolve(__dirname, '..');
+const handler = require(path.join(root, 'api/public-config.js'));
+const env = ['SUPABASE_URL','SUPABASE_PUBLISHABLE_KEY','NEXT_PUBLIC_SUPABASE_URL','NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY'];
+for (const key of env) delete process.env[key];
+function request(method = 'GET') {
+  const result = {headers:{}};
+  handler({method}, {setHeader(k,v){result.headers[k]=v;},status(s){result.status=s;return this;},json(v){result.body=v;}});
+  return result;
+}
+assert.equal(request().status,503);
+assert.equal(request('POST').status,405);
+process.env.SUPABASE_URL = 'https://example.supabase.co';
+process.env.SUPABASE_PUBLISHABLE_KEY = 'sb_secret_this_must_not_be_returned';
+assert.equal(request().status,503);
+assert.ok(!JSON.stringify(request()).includes('sb_secret_'));
+const jwt = role => ['header',Buffer.from(JSON.stringify({role})).toString('base64url'),'signature'].join('.');
+process.env.SUPABASE_PUBLISHABLE_KEY = jwt('service_role');
+assert.equal(request().status,503);
+process.env.SUPABASE_PUBLISHABLE_KEY = jwt('anon');
+assert.equal(request().status,200);
+process.env.SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_public_test';
+assert.equal(request().status,200);
+assert.equal(request().headers['Cache-Control'],'no-store');
+process.env.SUPABASE_URL = 'http://example.supabase.co';
+assert.equal(request().status,503);
+
+const context = {sessionStorage:{getItem(){return null;}}};
+vm.createContext(context);
+vm.runInContext(fs.readFileSync(path.join(root,'submission-import.js'),'utf8'),context);
+const record = {student_number:'20701',grade_term:'중2',course_unit:'기술',activity_title:'설계',evidence:'<script>alert(1)</script>',contribution:'조립',reflection:'개선',problem_solving:'가'.repeat(3000)};
+const result = context.studentDraftFields(record);
+assert.equal(result.studentId,'20701');
+assert.ok(result.evidence.startsWith('[학생 자기보고 · 교사 확인 전]'));
+assert.ok(result.problemSolving.length <= 1200);
+assert.equal(result.project,'');
+assert.ok(!('observation' in result));
+assert.ok(!('apiKey' in result));
+const assigned = {};
+let removed = false;
+context.sessionStorage = {getItem(){return JSON.stringify(record);},removeItem(){removed=true;}};
+context.document = {getElementById(id){return id==='lesson-form'?{prepend(){}}:{set value(value){assigned[id]=value;}};},createElement(){return {setAttribute(){}};}};
+vm.runInContext(fs.readFileSync(path.join(root,'submission-import.js'),'utf8'),context);
+assert.equal(assigned.studentId,'20701');
+assert.ok(removed);
+
+const html = fs.readFileSync(path.join(root,'students.html'),'utf8');
+const js = fs.readFileSync(path.join(root,'students.js'),'utf8');
+for (const match of js.matchAll(/\$\('#([^']+)'\)/g)) assert.ok(html.includes(`id="${match[1]}"`),`Missing UI element ${match[1]}`);
+for (const field of ['student_number','grade_term','course_unit','activity_title','evidence','project','contribution','problem_solving','reflection']) assert.ok(html.includes(`name="${field}"`));
+assert.ok(!js.includes('.innerHTML'));
+console.log('PASS: public config rejects missing/secret/admin keys; methods and HTTPS checked; import limits, provenance, one-time consumption and UI fields checked.');

@@ -13,3 +13,5 @@
 .form-panel{padding-bottom:24px}
 @media(max-width:900px){.result-panel{height:min(820px,calc(100vh - 40px));min-height:500px}}
 @media(max-width:680px){.result-panel{position:static;height:560px;min-height:500px}.form-section{gap:13px;padding-top:17px}.section-heading{gap:9px}.result-actions{gap:5px}.download-button{padding:7px 8px;font-size:9px}}
+
+.submission-link{white-space:nowrap}@media(max-width:1050px){.topbar-note{display:none}}@media(max-width:480px){.topbar{height:auto;min-height:74px;flex-wrap:wrap;gap:10px;padding:14px 0}.submission-link{font-size:11px}}

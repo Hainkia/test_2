@@ -16,4 +16,57 @@ Gemini API 키는 브라우저 로컬 저장소나 서버 로그에 기록하지
 ## 모델
 
 `gemini-3.5-flash-lite`
-# test_2
+
+
+## 학생 활동 제출함 (Supabase)
+
+학생용 주소는 `/students.html`입니다. 이메일·비밀번호로 가입하고 이메일 인증 후 로그인합니다.
+학생은 학번/수업용 번호, 학년·학기, 과목·단원, 활동 제목, 수행 근거, 개인 기여, 성찰을 제출합니다.
+학생은 본인 기록만 조회하고, 교사로 지정된 계정은 이 Supabase 프로젝트의 모든 제출 기록을 조회합니다.
+학생 번호는 학생이 작성한 값이며 인증된 학번이 아닙니다. 로그인 계정의 소유권과는 별개입니다.
+교사는 학번·과목으로 검색한 뒤 기록을 기존 세특 작성 화면으로 가져올 수 있습니다.
+학생 자기보고를 표시하며 Gemini에 자동 전송하지 않습니다. 교사가 사실을 확인하고 생성 버튼을 눌러야 전송됩니다.
+
+### 최초 연결
+
+1. Supabase 프로젝트의 SQL Editor에서 `supabase/schema.sql` 전체를 실행합니다.
+2. Authentication에서 Email 제공자와 회원가입을 활성화합니다. 이메일 인증을 유지하고,
+   URL Configuration의 Site URL을 실제 Vercel 배포 주소로 설정합니다.
+   학교 전체가 가입할 때는 Supabase의 이메일 발송 한도와 SMTP 설정을 확인합니다.
+3. Vercel 프로젝트의 Settings → Environment Variables에 `.env.example`에 적힌 두 변수를 등록합니다.
+   `SUPABASE_URL`에는 프로젝트 URL, `SUPABASE_PUBLISHABLE_KEY`에는 Publishable key를 넣습니다.
+   기존 자료의 `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`도 지원합니다.
+   이 앱은 정적 HTML이므로 `/api/public-config`가 공개 연결 정보만 제공합니다.
+   Secret key나 service_role 키는 사용하지 않습니다. `.env.local`은 Git에 포함하지 않습니다.
+4. Vercel에서 Framework Preset `Other`, 빌드 명령 없이 다시 배포합니다.
+5. 교사도 `/students.html`에서 가입하고 이메일 인증을 완료합니다.
+   SQL 파일 마지막의 교사 등록 예시에서 `YOUR_TEACHER_EMAIL`을 실제 교사 이메일로 바꿔 별도로 실행합니다.
+   교사 권한은 브라우저의 선택 버튼이 아닌 DB 관리자가 부여합니다.
+6. 학생 계정 A/B와 교사 계정으로 각각 로그인해 아래 연결 검증을 수행합니다.
+
+### 권한과 운영 범위
+
+Supabase Auth + Row Level Security(RLS)로 로그인한 학생의 소유권을 검사합니다.
+비로그인 사용자는 제출 기록을 읽거나 쓸 수 없고, 학생은 다른 학생의 기록을 읽을 수 없습니다.
+교사 역할 테이블은 본인 권한 조회만 가능하며 학생이 추가/수정할 수 없습니다.
+제출 시 사용자 ID와 제출 시각은 DB에서 생성하며 브라우저가 지정할 수 없습니다.
+수정·삭제는 이 첫 버전에 제공하지 않습니다. 잘못 제출한 기록은 교사에게 문의합니다.
+**하나의 Supabase 프로젝트는 한 학교/교사 그룹 전용**입니다. 등록 교사는 모든 제출 기록을 볼 수 있습니다.
+여러 학교/반의 교사를 서로 분리하려면 수업별 멤버십을 추가한 후 운영해야 합니다.
+로그인 세션은 현재 브라우저 탭의 sessionStorage에 보관합니다. 공용 기기에서는 사용 후 로그아웃합니다.
+비밀번호는 Supabase Auth로만 전송하며 활동 테이블에 저장하지 않습니다. Gemini 키도 DB에 저장하지 않습니다.
+
+### 실제 연결 검증
+
+- 학생 A 로그인 → 활동 제출 → 새로고침 후 자기 기록 확인
+- 학생 B 로그인 → A 기록이 보이지 않는지 확인 (직접 DB 요청도 RLS로 차단)
+- 비로그인 DB 요청 → 조회/등록 거절 확인
+- 학생의 teacher_roles 삽입과 타인 user_id 지정 시도 → 거절 확인
+- 교사 로그인 → 전체 제출함 검색 → 활동을 세특 폼에 불러오기 → 성취기준/교사 관찰 추가
+- 악성 HTML 형태의 활동 입력도 기록 화면에서 실행되지 않고 글자로 표시되는지 확인
+
+실제 프로젝트 URL과 키, DB 스키마 적용 전에는 DB 연결 검증을 완료할 수 없습니다.
+로컬 연동은 `vercel dev`로 실행합니다. 단순 파일 열기나 정적 파일 서버만으로는 `/api` 함수가 실행되지 않습니다.
+
+공식 참고: [Supabase RLS](https://supabase.com/docs/guides/database/postgres/row-level-security),
+[이메일 가입](https://supabase.com/docs/reference/javascript/auth-signup).
