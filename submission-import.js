@@ -13,6 +13,7 @@ try {
     sessionStorage.removeItem('student-evidence-import');
     const record = JSON.parse(stored);
     if (record && typeof record === 'object' && !Array.isArray(record)) {
+      if (/^[0-9a-f-]{36}$/i.test(record.id || '')) document.getElementById('lesson-form').dataset.submissionId = record.id;
       for (const [id, text] of Object.entries(studentDraftFields(record))) document.getElementById(id).value = text;
       const note = document.createElement('p');
       note.className = 'privacy-note'; note.setAttribute('role','status');

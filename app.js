@@ -36,6 +36,7 @@ function escapeHtml(text) {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (generateButton.disabled) return;
   errorBox.hidden = true;
 
   const payload = {
@@ -70,7 +71,9 @@ form.addEventListener("submit", async (event) => {
     return;
   }
 
+  document.dispatchEvent(new Event("draft-generation-start"));
   latestReport = "";
+  report.value = "";
   downloadButton.disabled = true;
   copyButton.disabled = true;
   setBusy(true);
@@ -84,7 +87,8 @@ form.addEventListener("submit", async (event) => {
     if (!response.ok) throw new Error(data.error || "요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.");
 
     latestReport = data.text.trim();
-    report.innerHTML = `<p>${escapeHtml(latestReport).replace(/\n/g, "<br>")}</p>`;
+    report.value = latestReport;
+    document.dispatchEvent(new Event("draft-text-changed"));
     loadingState.hidden = true;
     emptyState.hidden = true;
     report.hidden = false;
@@ -101,6 +105,7 @@ form.addEventListener("submit", async (event) => {
     generateButton.disabled = false;
     generateButton.querySelector(".button-label").textContent = "세특 초안 만들기";
     resultContent.setAttribute("aria-busy", "false");
+    document.dispatchEvent(new Event("draft-generation-end"));
   }
 });
 
@@ -127,3 +132,22 @@ downloadButton.addEventListener("click", () => {
   anchor.remove();
   URL.revokeObjectURL(url);
 });
+
+// One editable value drives copy, download and database saving.
+report.addEventListener('input', () => {
+  latestReport = report.value.trim();
+  copyButton.disabled = downloadButton.disabled = !latestReport;
+  const count = value('charBasis') === '공백 제외' ? latestReport.replace(/\s/g, '').length : latestReport.length;
+  resultStatus.textContent = `교사 검토 문장 · ${count.toLocaleString('ko-KR')}자 (${value('charBasis')})`;
+  document.dispatchEvent(new Event('draft-text-changed'));
+});
+document.addEventListener('load-final-text', event => {
+  latestReport = typeof event.detail?.text === 'string' ? event.detail.text : '';
+  report.value = latestReport;
+  report.hidden = false; emptyState.hidden = true; loadingState.hidden = true;
+  copyButton.disabled = downloadButton.disabled = !latestReport.trim();
+  resultStatus.textContent = '최종 문장을 검토하고 저장해 주세요';
+  document.dispatchEvent(new Event('draft-text-changed'));
+});
+
+document.addEventListener('final-save-busy', event => { generateButton.disabled = !!event.detail; });

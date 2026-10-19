@@ -61,7 +61,7 @@ function renderRecord(record) {
     button.type = 'button'; button.className = 'download-button'; button.textContent = '이 기록으로 세특 초안 작성';
     button.addEventListener('click', () => {
       try {
-        const payload = Object.fromEntries(fields.map(key => [key, record[key]]));
+        const payload = {id:record.id, ...Object.fromEntries(fields.map(key => [key, record[key]]))};
         sessionStorage.setItem('student-evidence-import', JSON.stringify(payload));
         location.assign('/');
       } catch { notice('브라우저의 임시 저장을 허용한 뒤 다시 시도해 주세요.', true); }

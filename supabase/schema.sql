@@ -47,3 +47,37 @@ commit;
 -- select id from auth.users where email = 'YOUR_TEACHER_EMAIL'
 -- on conflict do nothing;
 -- Students cannot grant themselves teacher access, even by modifying browser requests.
+
+-- Final teacher reports: only the authoring teacher can read or edit.
+begin;
+create table public.teacher_reports (
+  id uuid primary key default gen_random_uuid(),
+  teacher_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  submission_id uuid references public.student_submissions(id) on delete set null,
+  student_number text not null check (char_length(student_number) <= 30 and char_length(btrim(student_number)) > 0),
+  grade_term text not null check (char_length(grade_term) <= 40 and char_length(btrim(grade_term)) > 0),
+  course_unit text not null check (char_length(course_unit) <= 100 and char_length(btrim(course_unit)) > 0),
+  final_text text not null check (char_length(final_text) <= 10000 and char_length(btrim(final_text)) > 0),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default clock_timestamp()
+);
+create index teacher_reports_owner_updated on public.teacher_reports(teacher_id, updated_at desc);
+create index teacher_reports_submission on public.teacher_reports(submission_id);
+alter table public.teacher_reports enable row level security;
+revoke all on public.teacher_reports from anon, authenticated;
+grant select on public.teacher_reports to authenticated;
+grant insert (submission_id,student_number,grade_term,course_unit,final_text) on public.teacher_reports to authenticated;
+grant update (submission_id,student_number,grade_term,course_unit,final_text) on public.teacher_reports to authenticated;
+create policy teacher_reports_read on public.teacher_reports for select to authenticated
+using (teacher_id = (select auth.uid()) and exists (select 1 from public.teacher_roles where user_id = (select auth.uid())));
+create policy teacher_reports_insert on public.teacher_reports for insert to authenticated
+with check (teacher_id = (select auth.uid()) and exists (select 1 from public.teacher_roles where user_id = (select auth.uid())));
+create policy teacher_reports_update on public.teacher_reports for update to authenticated
+using (teacher_id = (select auth.uid()) and exists (select 1 from public.teacher_roles where user_id = (select auth.uid())))
+with check (teacher_id = (select auth.uid()) and exists (select 1 from public.teacher_roles where user_id = (select auth.uid())));
+create function public.touch_teacher_report() returns trigger language plpgsql security invoker set search_path = '' as $$
+begin new.updated_at = clock_timestamp(); return new; end;
+$$;
+revoke all on function public.touch_teacher_report() from public, anon, authenticated;
+create trigger teacher_report_updated before update on public.teacher_reports for each row execute function public.touch_teacher_report();
+commit;

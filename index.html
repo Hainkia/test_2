@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/overrides.css" />
     <script src="/app.js" defer></script>
     <script src="/submission-import.js" defer></script>
+    <script type="module" src="/final-records.js"></script>
   </head>
   <body>
     <div class="shell">
@@ -115,9 +116,22 @@
                 <div class="empty-tags"><span>근거 중심</span><span>개별 기여</span><span>성장 과정</span></div>
               </div>
               <div id="loading-state" class="loading-state" hidden><div class="loader-orbit"><span></span><span></span><span></span></div><p class="loading-title">관찰 근거를 문장으로 정리하고 있어요</p><p class="loading-copy">입력하지 않은 사실은 추측하지 않고 작성합니다.</p><div class="loading-line"><span></span></div></div>
-              <article id="report" class="report" hidden></article>
+              <textarea id="report" class="report report-editor" rows="12" maxlength="10000" aria-label="교사가 수정하는 최종 세특 문장" placeholder="생성된 초안을 검토하고 수정하거나, 직접 세특 문장을 입력하세요." hidden></textarea>
             </div>
             <div class="result-footer"><span class="footer-dot"></span><span id="result-status">생성 결과가 여기에 표시됩니다</span><span class="footer-model">POWERED BY GEMINI</span></div>
+            <section class="final-records" aria-labelledby="final-records-title">
+              <h3 id="final-records-title">최종 세특 보관함</h3>
+              <p id="final-account" role="status">저장 권한을 확인하고 있습니다…</p>
+              <p class="field-hint">학생 번호·학년·과목과 함께 저장됩니다. 작성한 교사만 조회·수정할 수 있습니다.</p>
+              <div class="final-actions"><button id="save-final" type="button" class="primary-button" disabled>최종 세특 저장</button><button id="new-final" type="button" class="download-button">새 문장 작성</button></div>
+              <p id="final-status" role="status" aria-live="polite">생성된 문장은 위에서 직접 수정할 수 있습니다.</p>
+              <div id="saved-final-panel" hidden>
+                <form id="final-filter-form" class="final-actions"><label class="field"><span class="field-label">학생 번호 검색</span><input id="final-filter" maxlength="30" placeholder="전체 또는 정확한 학생 번호"></label><button class="download-button" type="submit">조회</button></form>
+                <p id="final-list-status" role="status"></p><div id="final-list"></div>
+                <div class="final-actions"><button id="final-previous" type="button" class="download-button" disabled>이전</button><span id="final-page"></span><button id="final-next" type="button" class="download-button" disabled>다음</button></div>
+              </div>
+            </section>
+
           </section>
         </div>
       </main>
