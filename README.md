@@ -31,7 +31,7 @@ Gemini API 키는 브라우저 로컬 저장소나 서버 로그에 기록하지
 
 1. Supabase 프로젝트의 SQL Editor에서 `supabase/schema.sql` 전체를 실행합니다.
 2. Authentication에서 Email 제공자와 회원가입을 활성화합니다. 이메일 인증을 유지하고,
-   URL Configuration의 Site URL을 실제 Vercel 배포 주소로 설정합니다.
+   URL Configuration의 Site URL을 실제 배포 주소의 `/students.html`로 설정합니다.
    학교 전체가 가입할 때는 Supabase의 이메일 발송 한도와 SMTP 설정을 확인합니다.
 3. Vercel 프로젝트의 Settings → Environment Variables에 `.env.example`에 적힌 두 변수를 등록합니다.
    `SUPABASE_URL`에는 프로젝트 URL, `SUPABASE_PUBLISHABLE_KEY`에는 Publishable key를 넣습니다.
@@ -70,3 +70,5 @@ Supabase Auth + Row Level Security(RLS)로 로그인한 학생의 소유권을 �
 
 공식 참고: [Supabase RLS](https://supabase.com/docs/guides/database/postgres/row-level-security),
 [이메일 가입](https://supabase.com/docs/reference/javascript/auth-signup).
+
+로컬 기본 검증: node tests/verify.cjs

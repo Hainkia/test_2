@@ -151,7 +151,7 @@ async function initialize() {
     const config = await response.json();
     if (!response.ok) { notice(config.error || '제출함 연결을 확인해 주세요.', true); return; }
     const {createClient} = await import('https://esm.sh/@supabase/supabase-js@2.117.3');
-    client = createClient(config.url, config.publishableKey, {auth:{storage:sessionStorage,detectSessionInUrl:false}});
+    client = createClient(config.url, config.publishableKey, {auth:{storage:sessionStorage,detectSessionInUrl:true}});
     client.auth.onAuthStateChange((_event, session) => {
       // Run DB queries outside the SDK auth callback lock.
       setTimeout(() => { void updateAccount(session).catch(() => notice('계정 확인에 실패했습니다. 다시 로그인해 주세요.', true)); }, 0);
