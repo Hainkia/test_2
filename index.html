@@ -55,7 +55,7 @@
                 <div class="section-heading"><span class="section-number">A</span><div><h3>수업 맥락</h3><p>성취기준과 수업에서 다룬 내용을 입력해 주세요.</p></div></div>
                 <div class="field-row">
                   <label class="field"><span class="field-label">학년·학기 <span class="required">필수</span></span><input id="gradeTerm" type="text" maxlength="40" placeholder="예: 중학교 2학년 1학기" required /></label>
-                  <label class="field"><span class="field-label">학생 임시 번호</span><input id="studentId" type="text" maxlength="30" placeholder="예: 학생 07" /></label>
+                  <label class="field"><span class="field-label">학생 번호 · 저장 시 필수</span><input id="studentId" type="text" maxlength="30" placeholder="예: 학생 07" /></label>
                 </div>
                 <label class="field"><span class="field-label">과목·단원 <span class="required">필수</span></span><input id="courseUnit" type="text" maxlength="100" placeholder="예: 기술·가정 / 기술의 활용" required /></label>
                 <label class="field"><span class="field-label">성취기준 <span class="required">필수</span></span><textarea id="achievementStandard" rows="3" maxlength="1200" placeholder="수업과 직접 관련된 성취기준을 입력해 주세요." required></textarea></label>
@@ -99,7 +99,7 @@
 
               <div id="form-error" class="form-error" role="alert" hidden></div>
               <button id="generate-button" class="primary-button" type="submit"><span class="button-label">세특 초안 만들기</span><span class="button-arrow" aria-hidden="true">↗</span></button>
-              <p class="privacy-note"><span aria-hidden="true">⌑</span> 수업·활동 자료는 Gemini API로 전송되며, 임시 번호는 파일명에만 사용됩니다. 학생 이름·연락처는 입력하지 마세요.</p>
+              <p class="privacy-note"><span aria-hidden="true">⌑</span> 수업·활동 자료는 Gemini API로 전송됩니다. 학생 번호는 Gemini에 보내지 않으며, 최종 세특 저장 시 함께 보관됩니다. 학생 이름·연락처는 입력하지 마세요.</p>
             </form>
           </section>
 
